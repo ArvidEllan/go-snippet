@@ -1,0 +1,27 @@
+# Compiled binaries
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Build output
+/bin/
+/pkg/
+/vendor/
+
+# IDE-specific
+.vscode/
+.idea/
+
+# System and temporary files
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# Log files
+*.log
+
+# Environment-specific
+.env
