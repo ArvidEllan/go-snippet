@@ -6,6 +6,9 @@ import (
 	"html/template"
 	"net/http"
 	"strconv"
+	"errors"
+
+	"snippetbox.alexedwards.net/internal/models"
 )
 
 func (app *application) home(w http.ResponseWriter, r *http.Request) {
@@ -82,4 +85,23 @@ func (app *application) createSnippet(w http.ResponseWriter, r *http.Request) {
 		app.serverError(w,err)
 	}
 	http.Redirect(w,r,fmt.Sprintf("/snippet/view?id=%d",id),http.StatusSeeOther)
+ }
+
+ func (app *application) snippetView(w http.ResponseWriter, r *http.Request) {
+	id,err := strconv.Atoi(r.URL.Query().Get("id"))
+	if err != nil || id < 1 {
+		app.NotFound(w)
+		return
+	}
+	snippet,err := app.snippets.Get(id)
+	if err != nil {
+		if errors.Is(err,models.ErrNoRecord){
+			app.NotFound(w)
+		} else {
+			app.serverError(w,err)
+		}
+		return
+	}
+	fmt.Fprintf(w, "%+V",snippet)
+	
  }
