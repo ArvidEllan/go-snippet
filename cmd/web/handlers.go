@@ -65,3 +65,21 @@ func (app *application) createSnippet(w http.ResponseWriter, r *http.Request) {
 
 	w.Write([]byte("create a new snippet"))
 }
+ func (app *application) snippetCreate(w http.ResponseWriter,r *http.Request){
+
+	if r.Method != http.MethodPost {
+		w.Header().Set("Allow",http.MethodPost)
+		app.clientError(w,http.StatusMethodNotAllowed)
+		return
+	}
+
+	title := "0 snail"
+	content := "0 snail\nClimb Mount Fuji,\nBut Slowly,slowly!\n\n- KObayashi Issa"
+	expires := 7
+
+	id,err := app.snippets.Insert(title,content,expires)
+	if err!=nil{
+		app.serverError(w,err)
+	}
+	http.Redirect(w,r,fmt.Sprintf("/snippet/view?id=%d",id),http.StatusSeeOther)
+ }
