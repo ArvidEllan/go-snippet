@@ -31,6 +31,15 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 
 	http.Redirect(w,r,fmt.Sprintf("/snippet/view?id=%d",id),http.StatusSeeOther)
 
+	snippets, err := app.snippets.Latest()
+	if err != nil {
+		app.serverError(w, err)
+		return
+	}
+	for _ , snippet := range snippets{
+		fmt.Fprintf(w, "%+v\n", snippet)
+	}
+
 	files := []string{
 		"./ui/html/home.page.tmpl",
 		"./ui/html/base.layout.tmpl",
